@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>color game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+    <style type="text/css">
+
+        body{
+            background-color: black;
+            margin: 0px;
+        }
+
+        .square{
+            background-color: purple;
+            width: 30%;
+            float: left;
+            margin: 1.66%;
+            padding-bottom: 30%;
+            border-radius: 25%;
+            transition: background .5s;
+        }
+
+
+        #container{
+            margin: 0 auto;
+            max-width: 650px;
+        }
+
+        h1{
+            color: purple;
+            text-transform: uppercase;
+            background: lightblue;
+            margin: 0px;
+        }
+
+        #strip{
+            background-color: white;
+            font-size: 20px;
+            text-align: center;
+            color: black;
+            }
+
+        .active{
+            background-color: steelblue;
+        }
+
+        #colorDisplay{
+            font-size: 150%;
+            font-weight: normal;
+        }
+
+        button{
+            text-transform: uppercase;
+            border: none;
+            background: none;
+            font-size: 100%;
+            padding: 0 25px;
+            border: none;
+            transition: all .5s;
+            outline: none;
+            }
+
+            button:hover{
+                background: blue;
+                color: black;
+            }
+
+
+        .spinner-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: lightblue;
+        z-index: 999999;
+        }
+
+        .sk-folding-cube {
+          margin: 350px auto;
+          width: 100px;
+          height: 100px;
+          position: relative;
+          -webkit-transform: rotateZ(45deg);
+                  transform: rotateZ(45deg);
+        }
+
+        .sk-folding-cube .sk-cube {
+          float: left;
+          width: 50%;
+          height: 50%;
+          position: relative;
+          -webkit-transform: scale(1.1);
+              -ms-transform: scale(1.1);
+                  transform: scale(1.1); 
+        }
+        .sk-folding-cube .sk-cube:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: black;
+          -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
+                  animation: sk-foldCubeAngle 3.0s infinite linear both;
+                  transform-origin: 100% 100%;
+        }
+        .sk-folding-cube .sk-cube2 {
+          -webkit-transform: scale(1.1) rotateZ(90deg);
+                  transform: scale(1.1) rotateZ(90deg);
+        }
+        .sk-folding-cube .sk-cube3 {
+          -webkit-transform: scale(1.1) rotateZ(180deg);
+                  transform: scale(1.1) rotateZ(180deg);
+        }
+        .sk-folding-cube .sk-cube4 {
+          -webkit-transform: scale(1.1) rotateZ(270deg);
+                  transform: scale(1.1) rotateZ(270deg);
+        }
+        .sk-folding-cube .sk-cube2:before {
+          -webkit-animation-delay: 0.3s;
+                  animation-delay: 0.4s;
+        }
+        .sk-folding-cube .sk-cube3:before {
+          -webkit-animation-delay: 0.6s;
+                  animation-delay: 0.8s; 
+        }
+        .sk-folding-cube .sk-cube4:before {
+          -webkit-animation-delay: 0.9s;
+                  animation-delay: 1.2s;
+        }
+        
+        @-webkit-keyframes sk-foldCubeAngle {
+          0%, 10% {
+            -webkit-transform: perspective(140px) rotateX(-180deg);
+                    transform: perspective(140px) rotateX(-180deg);
+            opacity: 0; 
+          } 25%, 75% {
+            -webkit-transform: perspective(140px) rotateX(0deg);
+                    transform: perspective(140px) rotateX(0deg);
+            opacity: 1; 
+          } 90%, 100% {
+            -webkit-transform: perspective(140px) rotateY(180deg);
+                    transform: perspective(140px) rotateY(180deg);
+            opacity: 0; 
+          } 
+        }
+
+        @keyframes sk-foldCubeAngle {
+          0%, 10% {
+            -webkit-transform: perspective(140px) rotateX(-180deg);
+                    transform: perspective(140px) rotateX(-180deg);
+            opacity: 0; 
+          } 25%, 75% {
+            -webkit-transform: perspective(140px) rotateX(0deg);
+                    transform: perspective(140px) rotateX(0deg);
+            opacity: 1; 
+          } 90%, 100% {
+            -webkit-transform: perspective(140px) rotateY(180deg);
+                    transform: perspective(140px) rotateY(180deg);
+            opacity: 0; 
+          }
+        }
+
+    </style>
+</head>
+
+ <body> 
+    <div class="spinner-wrapper">
+<div class="sk-folding-cube">
+  <div class="sk-cube1 sk-cube"></div>
+  <div class="sk-cube2 sk-cube"></div>
+  <div class="sk-cube4 sk-cube"></div>
+  <div class="sk-cube3 sk-cube"></div>
+</div>
+</div>
+
+    <h1 style="text-align: center;"> THE <br><span id="colorDisplay">RGB</span><br> GAME</h1>
+    <div id="strip">
+        <span id="message"></span>
+        <button id="reset">PLAY AGAIN</button>
+        <button id="easy">EASY</button>
+        <button id="hard" class="active">HARD</button>
+    </div>
+    <div id="container">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+
+
+
+<script type="text/javascript">
+    
+        $(document).ready(function() {
+            $(window).on("load", function() {
+            function hidePreloader() {
+            var preloader = $('.spinner-wrapper');
+            preloader.fadeOut(4000);
+             }
+                hidePreloader();
+            });
+        });
+
+    var numSquares = 6;
+    var colors = generateRandomColors(numSquares);
+    var squares = document.querySelectorAll(".square");
+    var pickedColor = pickColor();
+    var colorDisplay = document.getElementById("colorDisplay");
+    var messageDisplay = document.querySelector("#message");
+    var h1 = document.querySelector("h1");
+    var reset = document.querySelector("#reset");
+    var easy = document.querySelector("#easy");
+    var hard = document.querySelector("#hard");
+
+
+    easy.addEventListener("click", function() {
+        easy.classList.add("active");
+        hard.classList.remove("active");
+        numSquares = 3;
+        colors = generateRandomColors(numSquares);
+        pickedColor = pickColor();
+        colorDisplay.textContent = pickedColor;
+        for(var i = 0; i < squares.length; i++) {
+            if(colors[i]) {
+                squares[i].style.background = colors[i];
+            } else {
+                squares[i].style.display = "none";
+            }
+        }
+
+        messageDisplay.textContent = " ";
+
+    });
+
+    hard.addEventListener("click", function() {
+        hard.classList.add("active");
+        easy.classList.remove("active");
+        numSquares = 6;
+        colors = generateRandomColors(numSquares);
+        pickedColor = pickColor();
+        colorDisplay.textContent = pickedColor;
+        for(var i = 0; i < squares.length; i++) {
+            squares[i].style.background = colors[i];
+            squares[i].style.display = "block";
+            messageDisplay.textContent = " ";
+
+        }
+    });
+
+    reset.addEventListener("click", function() {
+        //generate all new colors
+        colors = generateRandomColors(numSquares);
+        //pick a new random color from array
+        pickedColor = pickColor();
+        //change colorDisplay to match picked Color
+        colorDisplay.textContent = pickedColor;
+        //change colors of squares
+        for(var i = 0; i < squares.length; i++) {
+            squares[i].style.background = colors[i];
+        }
+        h1.style.background = "black";
+        messageDisplay.textContent = " ";
+
+    });
+
+            
+
+    colorDisplay.textContent = pickedColor;
+
+    for(var i = 0; i < squares.length; i++){
+        // add initial colors to squares
+        squares[i].style.background = colors[i];
+
+        //add click listeners to squares
+        squares[i].addEventListener("click", function() {
+
+                        //grab color of clicked squares
+            var clickedColor = this.style.background;
+            //compare color to pickedColor
+            //console.log(pickedColor, clickedColor); 
+            if(clickedColor === pickedColor) {
+                messageDisplay.textContent = "Correct!";
+                reset.textContent = "Play Again?";
+                changeColors(clickedColor);
+                h1.style.background = clickedColor;
+            } else {
+                this.style.background = "black";
+                messageDisplay.textContent = "Try Again";
+            }
+        });
+    }
+
+    function changeColors(color) {
+        //loop through all squares
+        for(var i = 0; i < squares.length; i++) {
+            //change each color to match given color
+            squares[i].style.background = color;
+        }
+    }
+
+    function pickColor() {
+        var random = Math.floor(Math.random() * colors.length);
+        return colors[random];
+    }
+
+    function generateRandomColors(num) {
+        //make an array
+        var arr = [];
+        //add num random colors to arr
+        for(var i = 0; i < num; i++) {
+            //get random color and push into arr
+            arr.push(randomColor());
+        }
+        //return that array
+        return arr;
+    }
+
+    function randomColor() {
+        //pick a "red" from 0 - 255
+        var r = Math.floor(Math.random() * 256);
+        //pick a "green" from 0 - 255
+        var g = Math.floor(Math.random() * 256);
+        //pick a "blue" from 0 - 255
+        var b = Math.floor(Math.random() * 256);
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+
+
+
+                                                                                                                                                                                            
+
+        </script>
+</body>
+</html>
